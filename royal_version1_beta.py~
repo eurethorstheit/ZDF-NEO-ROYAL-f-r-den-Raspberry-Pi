@@ -20,7 +20,7 @@ from configparser import ConfigParser
 
 lt = time.localtime() # Tupel der aktuellen Zeit (lt bedeutet local time)
 DL_URLS = [] # Liste der zu ladenden Videos
-DM = 0 # DM bedeutet Deine Mudda oder Developer Mode
+DM = 0 # DM bedeutet Deine Mudder oder Developer Mode
 def Schreibe(Daten, Dateiname = "Daten.dat"): # Hauptsächlich zum Testen
 	Datei = open(Dateiname,"a+")
 	Datei.write(Daten)
