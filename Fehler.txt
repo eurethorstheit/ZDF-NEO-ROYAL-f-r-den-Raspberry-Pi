@@ -1,0 +1,30 @@
+8. Dezember 2016
+
+Originallink:
+	https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg/2/161208_sendungroyale064vdf_nmg_476k_p9v13.mp4
+
+	https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg/1/161208_sendungroyale064vdf_nmg_476k_p9v13.mp4
+
+
+Verseuchtes a: https://downloadzdf-a.akamaihd.net/mp4/zdf/
+Verseuchtes b: 16/12/
+Verseuchtes c:161201_sendungroyale63sch_nmg", "apiToken": /
+Verseuchtes d: 12
+Verseuchtes e: 161201_sendungroyale63sch_nmg", "apiToken": 
+Verseuchtes f: _476k_p9v13.mp4
+
+
+
+Scanne Tag: 8
+ZDF-Mediathekeintrag vorhanden :https://www.zdf.de/comedy/neo-magazin-mit-jan-boehmermann/neo-magazin-royale-mit-jan-boehmermann-vom-8-dezember-2016-100.html
+Sendungroyale gefunden
+Zu testende Quelle: https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg", "apiToken": /1/161208_sendungroyale064vdf_nmg", "apiToken": _476k_p9v13.mp4
+Zu testende Quelle: https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg", "apiToken": /2/161208_sendungroyale064vdf_nmg", "apiToken": _476k_p9v13.mp4
+Zu testende Quelle: https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg", "apiToken": /3/161208_sendungroyale064vdf_nmg", "apiToken": _476k_p9v13.mp4
+Zu testende Quelle: https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg", "apiToken": /4/161208_sendungroyale064vdf_nmg", "apiToken": _476k_p9v13.mp4
+Zu testende Quelle: https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg", "apiToken": /5/161208_sendungroyale064vdf_nmg", "apiToken": _476k_p9v13.mp4
+Zu testende Quelle: https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg", "apiToken": /6/161208_sendungroyale064vdf_nmg", "apiToken": _476k_p9v13.mp4
+Zu testende Quelle: https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg", "apiToken": /7/161208_sendungroyale064vdf_nmg", "apiToken": _476k_p9v13.mp4
+Zu testende Quelle: https://downloadzdf-a.akamaihd.net/mp4/zdf/16/12/161208_sendungroyale064vdf_nmg", "apiToken": /8/161208_sendungroyale064vdf_nmg", "apiToken": _476k_p9v13.mp4
+
+

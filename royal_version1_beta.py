@@ -18,6 +18,10 @@ from configparser import ConfigParser
 #Beim ersten Scannen wird der erste Tag des ersten Monats nicht berücksichtigt, muss gefixt werden
 #Funktionen noch nicht nutzbar: GUI, Qualität (im Moment ist es nur die schlechteste Qualität), Playerwahl (im Moment nur mplayer), developermode ausschalten geht noch nicht) 
 
+#Downloadlink zum Beispiel für 17 nov 2016, schlechte Qualität:
+# https://downloadzdf-a.akamaihd.net/mp4/zdf/16/11/161117_sendungroyale61won_nmg/2/161117_sendungroyale61won_nmg_476k_p9v13.mp4
+
+
 lt = time.localtime() # Tupel der aktuellen Zeit (lt bedeutet local time)
 DL_URLS = [] # Liste der zu ladenden Videos
 DM = 0 # DM bedeutet Deine Mudda oder Developer Mode
@@ -39,7 +43,7 @@ def c_matchen(Quelle):
 	string_roh = Quelle[i_start:i_end]
 	string_match = re.search(r"([0-9].*)\"",string_roh)
 	if string_match is not None:
-		c = string_match.group(1)
+		c = string_match.group(0)
 		return c
 
 def hole_tag(c): # Holt den Tag aus c heraus
@@ -47,7 +51,7 @@ def hole_tag(c): # Holt den Tag aus c heraus
 	tag = Tag.group(1)
 	tag = tag[len(tag)-2:]
 	return tag
-
+	
 def Teste_Quelle(url): # Pruefen, ob eine URL vorhanden ist
 	try:
 		resp = urllib.request.urlopen(url)
@@ -65,24 +69,28 @@ def Teste_Content(URL,D,d,f): # Testet, ob Downloadbarer Link oder nicht und geb
 		jahr = str(f[2:])
 		a = 'https://downloadzdf-a.akamaihd.net/mp4/zdf/' 
 		b = jahr+"/"+str(monat)+"/"
-		c = c_matchen(Quelle)+"/" 
+		c = c_matchen(Quelle)
+		c = c[:-16]+"/" # muss gemacht werden, weil "apiToken": in das Ergebnis eingebaut wurde
 		tag = hole_tag(c)
 		#d = "2/" # wird drei Zeilen weiter angepasst und eine Zahl 1 bis 3 ausprobiert, bis es passt
 		e = c[:-1]
 		f = "_476k_p9v13.mp4"
+		if DM == 1:
+			print("Verseuchtes a: "+a)
+			print("Verseuchtes b: "+b)
+			print("Verseuchtes c:" + c)
+			print("Verseuchtes d: "+str(d))
+			print("Verseuchtes e: "+str(e))
+			print("Verseuchtes f: "+str(f))
 		for d_temp in range (1,9,1): # d herausfinden
 			d = str(d_temp)+"/"
-			URL = a+b+c+d+e+f # das ist nun die DownloadURL
-			if DM == 1 : print("Zu testende Quelle: "+URL)
-			if Teste_Quelle(URL) == True: # Datensatz zusammenstellen und zurückgeben
-				Datensatz = str(jahr)+"##"+str(monat)+"##"+str(tag)+"##"+str(URL)+"\n"
+			url = a+b+c+d+e+f # das ist nun die DownloadURL
+			if DM == 1 : print("Zu testende Quelle: "+url)
+			if Teste_Quelle(url) == True: # Datensatz zusammenstellen und zurückgeben
+				Datensatz = str(jahr)+"##"+str(monat)+"##"+str(tag)+"##"+str(url)+"\n"
 				return Datensatz
 	else:
 		return False
-
-
-
-
 
 
 def Hole_Datum_Last_Entry():
@@ -143,7 +151,7 @@ def scan_monat(DL_URLS = [],jahr = "2017", monat = "1", t_start = "1",t_end = "3
 
 def scan_jahr(DL_URLS = [],jahr = "2017", m_start = "1",m_end = "12",b_jahr_start = False,b_jahr_end = False):
 	
-	print("Jahr: %s, Startmonat: %s - Endmonat: %s\n"%(jahr,m_start,m_end)) 
+	print("\nJahr: %s, Startmonat: %s - Endmonat: %s\n"%(jahr,m_start,m_end)) 
 	''' Grundlegende Strings zum Aufbau der zu durchsuchenden Website '''
 	for monat in range(int(m_start),int(m_end)+1,1):
 		if (monat == int(Last_Entry[1]) and (b_jahr_start == True)): # Hier werden die Monatsgrenzen m_start und m_end für das jeweilige Jahr festgelegt
@@ -210,7 +218,7 @@ if os.path.isfile("config.ini") == False:
 	parser.set('videooptions','quality',eingabe)
 	eingabe = input("Pufferzeit berechnen. Bitte Zahl zwischen 0 und 2 eingeben.\n\t0 -- keinen Puffer\n\t1 -- doppelter Puffer\n\t2 -- dreifacher Puffer\nEingabe: ")
 	parser.set('videooptions','buffer',eingabe)
-	eingabe = input("Wieviele Monate soll der scanner rückwirkend nach Folgen suchen?\n\t Achtung! Dauert pro Monat eventuell ein paar Minuten\nEingabe: ")
+	eingabe = input("\tWieviele Monate soll der scanner rückwirkend nach Folgen suchen?\n\t Achtung! Dauert pro Monat eventuell ein paar Minuten\nEingabe: ")
 	parser.set('folgen','monate',eingabe)
 	datei = open('config.ini','w')
 	parser.write(datei)
@@ -250,7 +258,7 @@ if os.path.isfile("Daten.dat") == True:
 	eingabe = ""
 else:
 	print("Noch keine Liste angelegt")
-	scan_start = input("Wieviele Monate rückwirkend soll gescannt werden?")
+	scan_start = input("\tWieviele Monate rückwirkend soll gescannt werden?\nAntwort: ")
 	first_use(lt,scan_start)
 	Last_Entry = Hole_Datum_Last_Entry() # Tupel Jahr,Monat,Tag
 	Last_Entry[0] = "20"+Last_Entry[0] # 2016 und nicht 16
@@ -273,8 +281,12 @@ else:
 def DB_clean(Auswahl):
 	if "AllerAnfangIstSchwer" in Auswahl[0]: # Anfangsmarkierung
 		del Auswahl[0]
-	while (Auswahl[len(Auswahl)-1] == Auswahl[len(Auswahl)-2]):
-		del Auswahl[len(Auswahl)-1]
+	try:	
+		while (Auswahl[len(Auswahl)-1] == Auswahl[len(Auswahl)-2]):
+			del Auswahl[len(Auswahl)-1]
+	except IndexError:	
+		print("Es konnten keine Folgen gefunden werden. Versuchen Sie ab einem früheren Monat zu scannen")
+		return None
 	if "AllerAnfangIstSchwer" in Auswahl[len(Auswahl)-1]: # Anfangsmarkierung
 		del Auswahl[len(Auswahl)-1]
 	return Auswahl
@@ -283,8 +295,19 @@ DL_URLS = []
 Auswahl = []
 
 if os.path.isfile("Daten.dat") == True:
-	Auswahl = Lese_Daten().rstrip().split('\n')
-	Auswahl = DB_clean(Auswahl)
+	Auswahl = None
+	while Auswahl == None:
+		Auswahl = DB_clean(Lese_Daten().rstrip().split('\n'))
+		if Auswahl == None:
+			scan_start = input("\tWieviele Monate rückwirkend soll gescannt werden?\nAntwort: ")
+			first_use(lt,scan_start)
+			Last_Entry = Hole_Datum_Last_Entry() # Tupel Jahr,Monat,Tag
+			Last_Entry[0] = "20"+Last_Entry[0] # 2016 und nicht 16
+			print("Starte Scanner…")		
+			starte_scan(DL_URLS,Last_Entry)
+			print("\rScanvorgang abgeschlossen")
+			Auswahl = DB_clean(Lese_Daten().rstrip().split('\n'))
+
 	print("\nListe der Folgen:")
 	x = 1
 	for key in Auswahl:
@@ -320,8 +343,13 @@ while Video_Info.poll() == None:
 		else:
 			break
 Video_Info.wait()
+if DM == 1:
+	print("buf_array")
+	print(buf_array)
 Index_Laenge = buf_array.index('Länge:') # Der Index, wo das Wort <Länge:> steht. Einen Index später kommt die Zahl 
+	# Funktioniert aufgrund eines Fehlers in der Matrix auf einmal nicht mehr
 Lange_Datei_in_MB = int(buf_array[Index_Laenge+1])/(1024*1024)
+	# wird deshalb erstmal Konstant gesetzt
 #################################
 VideoDaten = []
 # Puffern _ ENDE
