@@ -162,6 +162,32 @@ def first_use(lt, zahl): # das erste mal
 	Erster_Datensatz = str(first_jahr)[2:]+"##"+str(first_month)+"##0##AllerAnfangIstSchwer\n"
 	Schreibe(Erster_Datensatz)
 
+
+def hole_restzeit():
+	''' Diese Funktion holt die Restzeit des Downloads '''
+	for line in Ladeprozess.stdout:
+		match = re.search(r'(ETA)(.*)',str(line))
+		if (match != None):
+			match = str(match.group(2))[:-3].strip()
+			if len(match) == 5:
+				print('4-Stellig')
+				match = match.split(':')
+				time_download_sek = int((int(match[0])*60 + int(match[0]))/60)
+				return time_download_min
+
+def video_puffer():
+			# Hole Gesamtzeit -- Achtung, Datei muss bereits auf dem Rechner sein. Falls zu schnell, kanns Probleme geben
+	gesamtzeit = 45
+	print('Videopuffer…')
+	input('…')
+	while Ladeprozess.poll() == None:
+		input('In der Schleife')	
+		restzeit = hole_restzeit()	
+		print(restzeit)
+		if restzeit < gesamtzeit:
+			break
+	
+
 parser = ConfigParser()
 
 if os.path.isfile("config.ini") == False:
@@ -273,23 +299,31 @@ Eingabe = input("Wähle eine Sendung: ")
 URL = Auswahl[int(Eingabe)-1].split('##')[3]
 if DM == 1 : print("Videolink: "+ URL)
 
+
+
+
+
+
 print("\nLadevorgang beginnen und Puffer zum Abspielen vorbereiten…")
 
-#---------------------------------------------
 
 
 
 # Ladevorgang und abspielen
 
-Laden = Popen(['youtube-dl','-o','Video_Royal.mp4', URL])
 
 
+
+Ladeprozess = Popen(['youtube-dl','-o','Video_Royal.mp4', URL],stdout = PIPE)
+
+#Puffer
+video_puffer()
 
 
 if str(parser.get('videooptions','player')) == "0":
-	Abspielen=subprocess.Popen(["omxplayer","-o","local","-b","Video_Royal.mp4"],stdout=FNULL, stderr=subprocess.STDOUT) # für omxplayer
+	Abspielen=subprocess.Popen(["omxplayer","-o","local","-b","Video_Royal.mp4"]) # für omxplayer
 else:
-	Abspielen=subprocess.Popen(["mplayer","-fs","Video_Royal.mp4"],stdout=FNULL, stderr=subprocess.STDOUT)   # für mplayer
+	Abspielen=subprocess.Popen(["mplayer","-fs","Video_Royal.mp4"])   # für mplayer
 
 while Abspielen.poll() == None:
 	pass
