@@ -16,8 +16,6 @@ from configparser import ConfigParser
 
 # Wichtige Grundlagen: youtube-dl ab version 2017.02.14
 
-
-
 # Medieneintrag vorhanden: 
 # https://www.zdf.de/comedy/neo-magazin-mit-jan-boehmermann/neo-magazin-royale-mit-jan-boehmermann-vom-9-februar-2017-100.html
 
@@ -33,8 +31,7 @@ def log(Daten, Dateiname = "errorlog.dat"): # Hauptsächlich zum Testen
 	Datei.write(Daten)
 	Datei.close()
 
-
-def Schreibe(Daten, Dateiname = "Daten.dat"): # Hauptsächlich zum Testen
+def Schreibe(Daten, Dateiname = "Daten.dat"): 
 	Datei = open(Dateiname,"a+")
 	Datei.write(Daten)
 	Datei.close()
@@ -88,7 +85,7 @@ def hole_f():
 def scan_monat(DL_URLS = [],jahr = "2017", monat = "1", t_start = "1",t_end = "31"):
 	MONATE = ["januar","februar","märz","april","mai","juni","juli","august","september","oktober","november","dezember"]
 	if DM == 1 : print("Monat: %s, Starttag: %s - Endtag: %s\n" % (monat,t_start,t_end)) 
-	if DM == 0 : print("Scanne: %s, %s…" % (D[monat-1],jahr)) 
+	if DM == 0 : print("Scanne: %s, %s…" % (MONATE[monat-1],jahr)) 
 
 	for b in range(int(t_start),int(t_end)+1):
 		sys.stdout.write("\rScanne Tag: %s" % (b))
@@ -105,7 +102,7 @@ def scan_monat(DL_URLS = [],jahr = "2017", monat = "1", t_start = "1",t_end = "3
 			if Teste_Quelle(URL) == True:		
 					# Zusammenstellen des Datensatzes und schreiben in Daten.dat
 				if DM == 1 : print("ZDF-Medieneintrag vorhanden :"+URL)	
-				Datensatz = d[3:]+'##'+str(monat)+'##'+b[:-1]+'##'+URL		
+				Datensatz = d[2:]+'##'+str(monat)+'##'+b[:-1]+'##'+URL		
 				if DM == 1: print('Datensatz: ' + Datensatz)
 				Schreibe(Datensatz)
 				if DM == 1 : log("Hinzugefuegte URL: "+ str(URL))
@@ -163,9 +160,10 @@ def first_use(lt, zahl): # das erste mal
 	Schreibe(Erster_Datensatz)
 
 
-def hole_restzeit():
+def hole_restzeit(p):
 	''' Diese Funktion holt die Restzeit des Downloads '''
-	for line in Ladeprozess.stdout:
+	print('in hole_restzeit - ANFANG')
+	for line in p:
 		match = re.search(r'(ETA)(.*)',str(line))
 		if (match != None):
 			match = str(match.group(2))[:-3].strip()
@@ -173,16 +171,16 @@ def hole_restzeit():
 				print('4-Stellig')
 				match = match.split(':')
 				time_download_sek = int((int(match[0])*60 + int(match[0]))/60)
+				print ('in hiole_restzeit - ENDE')
 				return time_download_min
 
 def video_puffer():
 			# Hole Gesamtzeit -- Achtung, Datei muss bereits auf dem Rechner sein. Falls zu schnell, kanns Probleme geben
 	gesamtzeit = 45
 	print('Videopuffer…')
-	input('…')
 	while Ladeprozess.poll() == None:
-		input('In der Schleife')	
-		restzeit = hole_restzeit()	
+		print('In der Schleife')		
+		restzeit = hole_restzeit(Ladeprozess.stdout)	
 		print(restzeit)
 		if restzeit < gesamtzeit:
 			break
@@ -319,7 +317,7 @@ Ladeprozess = Popen(['youtube-dl','-o','Video_Royal.mp4', URL],stdout = PIPE)
 #Puffer
 video_puffer()
 
-
+exit()
 if str(parser.get('videooptions','player')) == "0":
 	Abspielen=subprocess.Popen(["omxplayer","-o","local","-b","Video_Royal.mp4"]) # für omxplayer
 else:
