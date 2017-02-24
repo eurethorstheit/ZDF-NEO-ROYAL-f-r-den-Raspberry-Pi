@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # coding: utf8
 
+# Geht seit 2017 nicht mehr
+
+
 import sys, os
 import subprocess
 from subprocess import PIPE, Popen
