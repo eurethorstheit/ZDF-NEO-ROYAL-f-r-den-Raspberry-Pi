@@ -102,7 +102,7 @@ def scan_monat(DL_URLS = [],jahr = "2017", monat = "1", t_start = "1",t_end = "3
 			if Teste_Quelle(URL) == True:		
 					# Zusammenstellen des Datensatzes und schreiben in Daten.dat
 				if DM == 1 : print("ZDF-Medieneintrag vorhanden :"+URL)	
-				Datensatz = d[2:]+'##'+str(monat)+'##'+b[:-1]+'##'+URL		
+				Datensatz = d[2:]+'##'+str(monat)+'##'+b[:-1]+'##'+URL+'\n'		
 				if DM == 1: print('Datensatz: ' + Datensatz)
 				Schreibe(Datensatz)
 				if DM == 1 : log("Hinzugefuegte URL: "+ str(URL))
