@@ -8,8 +8,8 @@ import re
 import urllib.request, urllib.error, urllib.parse #Zum Holen der Internetseite
 import os.path # zum Prüfen, ob die Datei da ist
 import time
+from time import sleep
 from threading import Thread
-import time
 from configparser import ConfigParser
 
 # Weiterentwicklungen: 
@@ -184,6 +184,18 @@ def video_puffer():
 		print(restzeit)
 		if restzeit < gesamtzeit:
 			break
+
+def match_restzeit():
+	''' Gibt die Ladezeit zurück '''
+	for line in Ladeprozess.stdout:
+		match = re.search(r'(ETA)(.*)',str(line))
+		if (match != None):
+			match = str(match.group(2))[:-3].strip()
+			if len(match) == 5:
+				match = match.split(':')
+				time_download_sek = int((int(match[0])*60 + int(match[0]))/60)
+				return time_download_sek
+
 	
 
 parser = ConfigParser()
@@ -304,30 +316,39 @@ if DM == 1 : print("Videolink: "+ URL)
 
 print("\nLadevorgang beginnen und Puffer zum Abspielen vorbereiten…")
 
+# Laden und abspielen
 
 
+Ladeprozess = Popen(['youtube-dl','--output','Video_Royal.mp4','--newline', URL],stdout = PIPE,stderr = PIPE)
 
-# Ladevorgang und abspielen
+while Ladeprozess.poll() == None:
+	print(str(match_restzeit()) + ' Minuten')
+	sleep ( 2 ) 
+	if int(match_restzeit()) < 20:
+		break
 
+print("Abspielen wird gestartet…")
 
-
-
-Ladeprozess = Popen(['youtube-dl','-o','Video_Royal.mp4', URL],stdout = PIPE)
-
-#Puffer
-video_puffer()
-
-exit()
 if str(parser.get('videooptions','player')) == "0":
-	Abspielen=subprocess.Popen(["omxplayer","-o","local","-b","Video_Royal.mp4"]) # für omxplayer
+	print("mit dem omxplayer…startet jetzt")
+	try:
+		Abspielen=subprocess.Popen(["omxplayer","-o","local","-b","Video_Royal.mp4"]).wait() # für omxplayer
+	except:
+		Abspielen=subprocess.Popen(["omxplayer","-o","local","-b","Video_Royal.mp4.part"]).wait() # für omxplayer
 else:
-	Abspielen=subprocess.Popen(["mplayer","-fs","Video_Royal.mp4"])   # für mplayer
+	print("mit dem mplayer…startet jetzt")
+	try:
+		Abspielen=subprocess.Popen(["mplayer","-fs","Video_Royal.mp4"]).wait()   # für mplayer
+		text, err = Abspielen.communicate() 
+	except Abspielen.CalledProcessError:
+		Abspielen=subprocess.Popen(["mplayer","-fs","Video_Royal.mp4.part"]).wait()   # für mplayer
 
-while Abspielen.poll() == None:
-	pass
-print("Programm beenden…")
-Ladevorgang.terminate()
-if os.path.isfile("Video_Royal.mp4") == True:
-	os.remove("Video_Royal.mp4")
-print("…das wars schon wieder")
+
+#while Abspielen.poll() == None:
+#	pass
+#print("Programm beenden…")
+#Ladevorgang.terminate()
+#if os.path.isfile("Video_Royal.mp4") == True:
+#	os.remove("Video_Royal.mp4")
+#print("…das wars schon wieder")
 
